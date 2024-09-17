@@ -46,7 +46,7 @@ export const userRegistrationForm: UserRegistrationProps[] = [
   },
 ];
 
-export const USER_LOGIN_FORM: UserRegistrationProps[] = [
+export const userLoginForm: UserRegistrationProps[] = [
   {
     id: "1",
     inputType: "input",
