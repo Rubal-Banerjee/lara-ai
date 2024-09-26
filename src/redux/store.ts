@@ -1,6 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import loadingReducer from "@/redux/features/loadingSlice";
 import authReducer from "@/redux/features/authStepSlice";
+import realtimeReducer from "@/redux/features/realtimeSlice";
+import chatRoomReducer from "@/redux/features/chatRoomSlice";
+import chatsReducer from "@/redux/features/chatsSlice";
 
 export const makeStore = () => {
   return configureStore(
@@ -8,6 +11,9 @@ export const makeStore = () => {
       reducer: {
         loadingReducer,
         authReducer,
+        realtimeReducer,
+        chatRoomReducer,
+        chatsReducer,
       },
     }
     // devTools: process.env.NODE_ENV !== "production",

@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { blogPosts } from "@/constants/blog-posts";
 import { pricingCards } from "@/constants/landing-page";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
@@ -96,6 +97,31 @@ export default function Home() {
           </Card>
         ))}
       </div>
+      <section className="flex justify-center items-center flex-col gap-4 mt-28">
+        <h2 className="text-4xl text-center">News Room</h2>
+        <p className="text-muted-foreground text-center max-w-lg">
+          {
+            "Explore our insights on AI, technology, and optimizing your business."
+          }
+        </p>
+      </section>
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-5 container mt-6">
+        {blogPosts &&
+          blogPosts.map((post) => (
+            <Link href={`/blogs/${post.id}`} key={post.id}>
+              <Card className="flex flex-col gap-2 rounded-xl overflow-hidden h-full hover:bg-gray-100">
+                <div className="relative w-full aspect-video">
+                  <Image src={post.image} alt="post featured image" fill />
+                </div>
+                <div className="py-5 px-10 flex flex-col gap-5">
+                  <CardDescription>{post.createdAt}</CardDescription>
+                  <CardTitle>{post.title}</CardTitle>
+                  {post.description1.slice(0, 100)}...
+                </div>
+              </Card>
+            </Link>
+          ))}
+      </section>
     </main>
   );
 }

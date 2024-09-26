@@ -1,6 +1,7 @@
 import Image from "next/image";
 import React from "react";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 const Navbar = () => {
   return (
@@ -25,7 +26,12 @@ const Navbar = () => {
         <li>Features</li>
         <li>Contact us</li>
       </ul>
-      <Button className="bg-orange px-8">Free Trial</Button>
+      <Link
+        href={"/dashboard"}
+        className="bg-orange px-4 py-2 rounded-sm text-white"
+      >
+        Free Trial
+      </Link>
     </div>
   );
 };

@@ -66,7 +66,7 @@ export const useSignUpForm = () => {
           if (!signUp.createdUserId) return;
 
           const registered = await onCompleteUserRegistration(
-            values.fullName,
+            values.fullname,
             signUp.createdUserId,
             values.type
           );
