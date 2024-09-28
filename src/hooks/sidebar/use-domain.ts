@@ -1,3 +1,5 @@
+"use client";
+
 import { AddDomainSchema } from "@/schemas/settings.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UploadClient } from "@uploadcare/upload-client";
