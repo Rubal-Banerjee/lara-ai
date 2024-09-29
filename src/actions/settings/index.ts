@@ -1,7 +1,7 @@
 "use server";
 
 import { client } from "@/lib/prisma";
-import { currentUser } from "@clerk/nextjs";
+import { clerkClient, currentUser } from "@clerk/nextjs";
 
 export const onGetSubscriptionPlan = async () => {
   try {
@@ -139,6 +139,109 @@ export const onIntegrateDomain = async (domain: string, icon: string) => {
     return {
       status: 400,
       message: "Domain already exists",
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const onUpdatePassword = async (password: string) => {
+  try {
+    const user = await currentUser();
+
+    if (!user) return null;
+    const update = await clerkClient.users.updateUser(user.id, { password });
+    if (update) {
+      return { status: 200, message: "Password updated" };
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const onGetCurrentDomainInfo = async (domain: string) => {
+  const user = await currentUser();
+
+  if (!user) return;
+
+  try {
+    const userDomain = await client.user.findUnique({
+      where: {
+        clerkId: user.id,
+      },
+      select: {
+        domains: {
+          where: {
+            name: {
+              contains: domain,
+            },
+          },
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+            userId: true,
+            chatBot: {
+              select: {
+                id: true,
+                welcomeMessage: true,
+                icon: true,
+              },
+            },
+          },
+        },
+        subscription: {
+          select: {
+            plan: true,
+          },
+        },
+      },
+    });
+
+    if (userDomain) {
+      return userDomain;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const onUpdateDomain = async (id: string, name: string) => {
+  try {
+    const domainExists = await client.domain.findFirst({
+      where: {
+        name: {
+          contains: name,
+        },
+      },
+    });
+
+    if (!domainExists) {
+      const domain = await client.domain.update({
+        where: {
+          id,
+        },
+        data: {
+          name,
+        },
+      });
+
+      if (domain) {
+        return {
+          status: 200,
+          message: "Domain updated",
+        };
+      }
+
+      return {
+        status: 400,
+        message: "Oops something went wrong!",
+      };
+    }
+
+    return {
+      status: 400,
+      message: "Domain with this name already exists",
     };
   } catch (error) {
     console.log(error);
