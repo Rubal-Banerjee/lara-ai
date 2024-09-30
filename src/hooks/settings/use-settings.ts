@@ -9,7 +9,13 @@ import { useForm } from "react-hook-form";
 import { useToast } from "../use-toast";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setLoading } from "@/redux/features/loadingSlice";
-import { onUpdateDomain, onUpdatePassword } from "@/actions/settings";
+import {
+  onChatBotImageUpdate,
+  onDeleteUserDomain,
+  onUpdateDomain,
+  onUpdatePassword,
+  onUpdateWelcomeMessage,
+} from "@/actions/settings";
 import {
   DomainSettingsProps,
   DomainSettingsSchema,
@@ -99,7 +105,53 @@ export const useSettings = (id: string) => {
       }
     }
 
-    if (values.image) {
+    if (values.image[0]) {
+      const uploaded = await upload.uploadFile(values.image[0]);
+      const image = await onChatBotImageUpdate(id, uploaded.uuid);
+      if (image) {
+        toast({
+          title: image.status == 200 ? "Success" : "Error",
+          description: image.message,
+        });
+        dispatch(setLoading(false));
+      }
     }
+
+    if (values.welcomeMessage) {
+      const message = await onUpdateWelcomeMessage(id, values.welcomeMessage);
+      if (message) {
+        toast({
+          title: "Success",
+          description: message.message,
+        });
+      }
+    }
+
+    reset();
+    router.refresh();
+    dispatch(setLoading(false));
   });
+
+  const onDeleteDomain = async () => {
+    setDeleting(true);
+    const deleted = await onDeleteUserDomain(id);
+
+    if (deleted) {
+      toast({
+        title: "Success",
+        description: deleted.message,
+      });
+      dispatch(setLoading(false));
+      router.refresh();
+    }
+  };
+
+  return {
+    register,
+    onUpdateSettings,
+    onDeleteDomain,
+    errors,
+    loading,
+    deleting,
+  };
 };

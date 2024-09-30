@@ -247,3 +247,116 @@ export const onUpdateDomain = async (id: string, name: string) => {
     console.log(error);
   }
 };
+
+export const onChatBotImageUpdate = async (id: string, icon: string) => {
+  const user = await currentUser();
+  if (!user) return;
+
+  try {
+    const image = await client.domain.update({
+      where: {
+        id,
+      },
+      data: {
+        chatBot: {
+          update: {
+            data: {
+              icon,
+            },
+          },
+        },
+      },
+    });
+
+    if (image) {
+      return {
+        status: 200,
+        message: "Chatbot icon updated successfully",
+      };
+    }
+
+    return {
+      status: 400,
+      message: "Oops something went wrong!",
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const onUpdateWelcomeMessage = async (
+  id: string,
+  welcomeMessage: string
+) => {
+  const user = await currentUser();
+  if (!user) return;
+
+  try {
+    const message = await client.domain.update({
+      where: {
+        id,
+      },
+      data: {
+        chatBot: {
+          update: {
+            data: {
+              welcomeMessage,
+            },
+          },
+        },
+      },
+    });
+
+    if (message) {
+      return {
+        status: 200,
+        message: "Welcome message updated successfully",
+      };
+    }
+
+    return {
+      status: 400,
+      message: "Oops something went wrong!",
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const onDeleteUserDomain = async (id: string) => {
+  const user = await currentUser();
+  if (!user) return;
+
+  try {
+    const validUser = await client.user.findUnique({
+      where: {
+        clerkId: user.id,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (validUser) {
+      // Check that domain belongs to this user and delete
+      const deleted = await client.domain.delete({
+        where: {
+          userId: validUser.id,
+          id,
+        },
+        select: {
+          name: true,
+        },
+      });
+
+      if (deleted) {
+        return {
+          status: 200,
+          message: `${deleted.name} was deleted successfully`,
+        };
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
