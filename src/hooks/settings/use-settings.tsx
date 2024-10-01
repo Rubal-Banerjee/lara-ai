@@ -11,7 +11,11 @@ import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { setLoading } from "@/redux/features/loadingSlice";
 import {
   onChatBotImageUpdate,
+  onCreateFilterQuestions,
+  onCreateHelpDeskQuestion,
   onDeleteUserDomain,
+  onGetAllFilterQuestions,
+  onGetAllHelpDeskQuestions,
   onUpdateDomain,
   onUpdatePassword,
   onUpdateWelcomeMessage,
@@ -19,9 +23,13 @@ import {
 import {
   DomainSettingsProps,
   DomainSettingsSchema,
+  FilterQuestionsProps,
+  FilterQuestionsSchema,
+  HelpDeskQuestionsProps,
+  HelpDeskQuestionsSchema,
 } from "@/schemas/settings.schema";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const upload = new UploadClient({
   publicKey: process.env.NEXT_PUBLIC_UPLOAD_CARE_PUBLIC_KEY as string,
@@ -153,5 +161,116 @@ export const useSettings = (id: string) => {
     errors,
     loading,
     deleting,
+  };
+};
+
+export const useHelpDesk = (id: string) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<HelpDeskQuestionsProps>({
+    resolver: zodResolver(HelpDeskQuestionsSchema),
+  });
+
+  const { toast } = useToast();
+  const loading = useAppSelector((store) => store.loadingReducer);
+  const dispatch = useAppDispatch();
+  const [isQuestions, setIsQuestions] = useState<
+    { id: string; question: string; answer: string }[]
+  >([]);
+  const onSubmitQuestion = handleSubmit(async (values) => {
+    dispatch(setLoading(true));
+    const question = await onCreateHelpDeskQuestion(
+      id,
+      values.question,
+      values.answer
+    );
+    if (question) {
+      setIsQuestions(question.questions!);
+      toast({
+        title: question.status == 200 ? "Success" : "Error",
+        description: question.message,
+      });
+      dispatch(setLoading(false));
+      reset();
+    }
+  });
+
+  const onGetQuestions = async () => {
+    dispatch(setLoading(true));
+    const questions = await onGetAllHelpDeskQuestions(id);
+    if (questions) {
+      setIsQuestions(questions.questions);
+      dispatch(setLoading(false));
+    }
+  };
+
+  useEffect(() => {
+    onGetQuestions();
+  }, []);
+
+  return {
+    register,
+    onSubmitQuestion,
+    errors,
+    isQuestions,
+    loading,
+  };
+};
+
+export const useFilterQuestions = (id: string) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<FilterQuestionsProps>({
+    resolver: zodResolver(FilterQuestionsSchema),
+  });
+
+  const { toast } = useToast();
+  const loading = useAppSelector((store) => store.loadingReducer);
+  const dispatch = useAppDispatch();
+  const [isQuestions, setIsQuestions] = useState<
+    { id: string; question: string }[]
+  >([]);
+
+  const onAddFilterQuestions = handleSubmit(async (values) => {
+    dispatch(setLoading(true));
+    const questions = await onCreateFilterQuestions(id, values.question);
+
+    if (questions) {
+      setIsQuestions(questions.questions!);
+      toast({
+        title: questions.status == 200 ? "Success" : "Error",
+        description: questions.message,
+      });
+      reset();
+      dispatch(setLoading(false));
+    }
+  });
+
+  const onGetQuestions = async () => {
+    dispatch(setLoading(true));
+    const questions = await onGetAllFilterQuestions(id);
+
+    if (questions) {
+      setIsQuestions(questions.questions);
+      dispatch(setLoading(false));
+    }
+  };
+
+  useEffect(() => {
+    onGetQuestions();
+  }, []);
+
+  return {
+    register,
+    errors,
+    onAddFilterQuestions,
+    loading,
+    isQuestions,
   };
 };

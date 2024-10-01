@@ -1,5 +1,5 @@
 import Infobar from "@/components/infobar";
-import BillingSettings from "@/components/settings/billing.settings";
+import BillingSettings from "@/components/settings/billing-settings";
 import ChangePassword from "@/components/settings/change-password";
 import DarKModeToggle from "@/components/settings/dark-mode";
 import React from "react";
