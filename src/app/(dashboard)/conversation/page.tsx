@@ -1,7 +1,7 @@
 import { onGetAllAccountDomains } from "@/actions/settings";
 import ConversationMenu from "@/components/conversations";
+import Messenger from "@/components/conversations/messenger";
 import Infobar from "@/components/infobar";
-import Navbar from "@/components/navbar";
 import { Separator } from "@/components/ui/separator";
 import React from "react";
 
@@ -16,7 +16,7 @@ const ConversationPage = async () => {
         <div className="px-5">
           <Infobar />
         </div>
-        {/* <Messenger /> */}
+        <Messenger />
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import ConversationSearch from "./search";
 import { Loader } from "../loader";
 import { CardDescription } from "../ui/card";
 import ChatCard from "./chat-card";
+import { Separator } from "../ui/separator";
 
 type Props = {
   domains?:
@@ -47,6 +48,18 @@ const ConversationMenu = ({ domains }: Props) => {
               )}
             </Loader>
           </div>
+        </TabsContent>
+        <TabsContent value="all">
+          <Separator orientation="horizontal" className="mt-5" />
+          all
+        </TabsContent>
+        <TabsContent value="expired">
+          <Separator orientation="horizontal" className="mt-5" />
+          expired
+        </TabsContent>
+        <TabsContent value="starred">
+          <Separator orientation="horizontal" className="mt-5" />
+          starred
         </TabsContent>
       </TabsMenu>
     </div>

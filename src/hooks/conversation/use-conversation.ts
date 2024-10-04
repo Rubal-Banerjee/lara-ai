@@ -1,17 +1,22 @@
 import {
   onGetChatMessages,
   onGetDomainChatRooms,
+  onOwnerSendMessage,
+  onRealTimeChat,
+  onViewUnReadMessages,
 } from "@/actions/conversation";
+import { pusherClient } from "@/lib/utils";
 import { setChatRoom } from "@/redux/features/chatRoomSlice";
 import { setChats } from "@/redux/features/chatsSlice";
 import { setLoading } from "@/redux/features/loadingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import {
+  ChatBotMessageSchema,
   ConversationSearchProps,
   ConversationSearchSchema,
 } from "@/schemas/conversation.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export const useConversation = () => {
@@ -75,4 +80,121 @@ export const useConversation = () => {
   };
 };
 
-export const useChatTime = (createdAt: Date, roomId: string) => {};
+export const useChatTime = (createdAt: Date, roomId: string) => {
+  const chatRoom = useAppSelector((store) => store.chatRoomReducer);
+  const [messageSentAt, setMessageSentAt] = useState<string>();
+  const [urgent, setUrgent] = useState<boolean>(false);
+
+  const onSetMessageReceivedDate = () => {
+    const current = new Date();
+    const currentDate = current.getDate();
+    const sent = new Date(createdAt);
+    const sentDate = sent.getDate();
+    const difference = currentDate - sentDate;
+
+    if (difference <= 0) {
+      setMessageSentAt(
+        `${sent.getHours}:${sent.getMinutes} ${
+          sent.getHours() < 12 ? "AM" : "PM"
+        }`
+      );
+      if (current.getHours() - sent.getHours() < 2) {
+        setUrgent(true);
+      }
+    } else {
+      setMessageSentAt(`${sentDate} ${sent.getMonth()}`);
+    }
+  };
+
+  const onSeenChat = async () => {
+    if (chatRoom == roomId && urgent) {
+      await onViewUnReadMessages(roomId);
+      setUrgent(false);
+    }
+  };
+
+  useEffect(() => {
+    onSeenChat();
+  }, [chatRoom]);
+
+  useEffect(() => {
+    onSetMessageReceivedDate();
+  }, []);
+
+  return {
+    messageSentAt,
+    urgent,
+    onSeenChat,
+  };
+};
+
+export const useChatWindow = () => {
+  const chats = useAppSelector((store) => store.chatsReducer);
+  const chatRoom = useAppSelector((store) => store.chatRoomReducer);
+  const loading = useAppSelector((store) => store.loadingReducer);
+  const dispatch = useAppDispatch();
+  const messageWindowRef = useRef<HTMLDivElement | null>(null);
+  const { register, handleSubmit, reset } = useForm({
+    resolver: zodResolver(ChatBotMessageSchema),
+    mode: "onChange",
+  });
+  const onScrollToBottom = () => {
+    messageWindowRef.current?.scroll({
+      top: messageWindowRef.current.scrollHeight,
+      left: 0,
+      behavior: "smooth",
+    });
+  };
+
+  useEffect(() => {
+    onScrollToBottom();
+  }, [chats, messageWindowRef]);
+
+  // WIP: Setup Pusher
+
+  // useEffect(() => {
+  //   if (chatRoom) {
+  //     pusherClient.subscribe(chatRoom)
+  //     pusherClient.bind("realtime-mode", (data: any) => {
+  //       dispatch(setChats([...chats, data.chat]))
+  //     })
+
+  //     return () => {
+  //       pusherClient.unbind("realtime-mode")
+  //       pusherClient.unsubscribe(chatRoom)
+  //     }
+  //   }
+  // }, [chatRoom])
+
+  const onHandleSentMessage = handleSubmit(async (values) => {
+    try {
+      const message = await onOwnerSendMessage(
+        chatRoom!,
+        values.content,
+        "assistant"
+      );
+
+      if (message) {
+        dispatch(setChats([...chats, message.message[0]]));
+        // WIP: Uncomment this when pusher is set
+        // await onRealTimeChat(
+        //   chatRoom!,
+        //   message.message[0].message,
+        //   message.message[0].id,
+        //   "assistant"
+        // )
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  return {
+    messageWindowRef,
+    register,
+    onHandleSentMessage,
+    chats,
+    loading,
+    chatRoom,
+  };
+};
