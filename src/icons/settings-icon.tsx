@@ -1,8 +1,6 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
-
-const SettingsIcon = (props: Props) => {
+const SettingsIcon = () => {
   return (
     <svg
       width="24"
@@ -28,7 +26,7 @@ const SettingsIcon = (props: Props) => {
         stroke-linejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
-export default SettingsIcon
+export default SettingsIcon;

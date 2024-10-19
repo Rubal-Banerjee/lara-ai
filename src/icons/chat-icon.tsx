@@ -1,8 +1,6 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
-
-const ChatIcon = (props: Props) => {
+const ChatIcon = () => {
   return (
     <svg
       width="24"
@@ -40,7 +38,7 @@ const ChatIcon = (props: Props) => {
         stroke-linejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
-export default ChatIcon
+export default ChatIcon;

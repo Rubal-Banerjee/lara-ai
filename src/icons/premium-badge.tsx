@@ -1,8 +1,6 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
-
-const PremiumBadge = (props: Props) => {
+const PremiumBadge = () => {
   return (
     <svg
       width="18"
@@ -16,7 +14,7 @@ const PremiumBadge = (props: Props) => {
         fill="#FFA947"
       />
     </svg>
-  )
-}
+  );
+};
 
-export default PremiumBadge
+export default PremiumBadge;

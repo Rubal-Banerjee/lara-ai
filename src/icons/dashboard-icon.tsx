@@ -1,8 +1,6 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
-
-const DashboardIcon = (props: Props) => {
+const DashboardIcon = () => {
   return (
     <svg
       width="24"
@@ -40,7 +38,7 @@ const DashboardIcon = (props: Props) => {
         stroke-linejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
-export default DashboardIcon
+export default DashboardIcon;

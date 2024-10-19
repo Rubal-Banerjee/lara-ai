@@ -1,8 +1,6 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
-
-const StarIcon = (props: Props) => {
+const StarIcon = () => {
   return (
     <svg
       width="20"
@@ -19,7 +17,7 @@ const StarIcon = (props: Props) => {
         stroke-linejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
-export default StarIcon
+export default StarIcon;

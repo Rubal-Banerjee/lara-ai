@@ -1,8 +1,6 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
-
-const DevicesIcon = (props: Props) => {
+const DevicesIcon = () => {
   return (
     <svg
       width="24"
@@ -54,7 +52,7 @@ const DevicesIcon = (props: Props) => {
         stroke-linejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
-export default DevicesIcon
+export default DevicesIcon;

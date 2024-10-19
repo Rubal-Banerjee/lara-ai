@@ -8,9 +8,7 @@ import Link from "next/link";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 
-type Props = {};
-
-const ButtonHandler = (props: Props) => {
+const ButtonHandler = () => {
   const authStep = useAppSelector((store) => store.authReducer);
   const dispatch = useAppDispatch();
   const { formState, getFieldState, getValues } = useFormContext();

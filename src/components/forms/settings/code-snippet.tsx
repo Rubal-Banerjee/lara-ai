@@ -11,7 +11,7 @@ type Props = {
 
 const CodeSnippet = ({ id }: Props) => {
   const { toast } = useToast();
-  let snippet = `
+  const snippet = `
     const iframe = document.createElement("iframe");
     
     const iframeStyles = (styleString) => {

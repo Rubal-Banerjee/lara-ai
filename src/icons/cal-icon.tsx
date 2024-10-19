@@ -1,8 +1,6 @@
-import React from 'react'
+import React from "react";
 
-type Props = {}
-
-const CalIcon = (props: Props) => {
+const CalIcon = () => {
   return (
     <svg
       width="24"
@@ -82,7 +80,7 @@ const CalIcon = (props: Props) => {
         stroke-linejoin="round"
       />
     </svg>
-  )
-}
+  );
+};
 
-export default CalIcon
+export default CalIcon;

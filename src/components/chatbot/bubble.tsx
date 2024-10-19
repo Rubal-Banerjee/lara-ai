@@ -15,7 +15,7 @@ type Props = {
 };
 
 const Bubble = ({ message, createdAt }: Props) => {
-  let d = new Date();
+  const d = new Date();
   const image = extractUUIDFromString(message.content);
 
   return (

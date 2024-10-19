@@ -12,7 +12,6 @@ import { setLoading } from "@/redux/features/loadingSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import {
   ChatBotMessageSchema,
-  ConversationSearchProps,
   ConversationSearchSchema,
 } from "@/schemas/conversation.schema";
 import { zodResolver } from "@hookform/resolvers/zod";

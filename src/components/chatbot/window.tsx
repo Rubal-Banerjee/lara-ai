@@ -6,7 +6,6 @@ import RealTimeMode from "./real-time";
 import Image from "next/image";
 import TabsMenu from "../tabs";
 import { BOT_TABS_MENU } from "@/constants/menu";
-import ChatIcon from "@/icons/chat-icon";
 import { TabsContent } from "../ui/tabs";
 import { Separator } from "../ui/separator";
 import Bubble from "./bubble";
