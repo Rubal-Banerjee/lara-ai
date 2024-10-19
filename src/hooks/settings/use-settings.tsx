@@ -13,6 +13,7 @@ import {
   onChatBotImageUpdate,
   onCreateFilterQuestions,
   onCreateHelpDeskQuestion,
+  onCreateNewDomainProduct,
   onDeleteUserDomain,
   onGetAllFilterQuestions,
   onGetAllHelpDeskQuestions,
@@ -21,6 +22,8 @@ import {
   onUpdateWelcomeMessage,
 } from "@/actions/settings";
 import {
+  AddProductProps,
+  AddProductSchema,
   DomainSettingsProps,
   DomainSettingsSchema,
   FilterQuestionsProps,
@@ -273,4 +276,43 @@ export const useFilterQuestions = (id: string) => {
     loading,
     isQuestions,
   };
+};
+
+export const useProducts = (domainId: string) => {
+  const { toast } = useToast();
+  const loading = useAppSelector((store) => store.loadingReducer);
+  const dispatch = useAppDispatch();
+  const {
+    register,
+    reset,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<AddProductProps>({
+    resolver: zodResolver(AddProductSchema),
+  });
+
+  const onCreateNewProduct = handleSubmit(async (values) => {
+    try {
+      dispatch(setLoading(true));
+      const uploaded = await upload.uploadFile(values.image[0]);
+      const product = await onCreateNewDomainProduct(
+        domainId,
+        values.name,
+        uploaded.uuid,
+        values.price
+      );
+      if (product) {
+        reset();
+        toast({
+          title: "Success",
+          description: product.message,
+        });
+        dispatch(setLoading(false));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  return { onCreateNewProduct, register, errors, loading };
 };

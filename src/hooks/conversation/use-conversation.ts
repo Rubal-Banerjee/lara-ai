@@ -150,24 +150,23 @@ export const useChatWindow = () => {
     onScrollToBottom();
   }, [chats, messageWindowRef]);
 
-  // WIP: Setup Pusher
+  useEffect(() => {
+    if (chatRoom) {
+      pusherClient.subscribe(chatRoom);
+      pusherClient.bind("realtime-mode", (data: any) => {
+        dispatch(setChats([...chats, data.chat]));
+      });
 
-  // useEffect(() => {
-  //   if (chatRoom) {
-  //     pusherClient.subscribe(chatRoom)
-  //     pusherClient.bind("realtime-mode", (data: any) => {
-  //       dispatch(setChats([...chats, data.chat]))
-  //     })
-
-  //     return () => {
-  //       pusherClient.unbind("realtime-mode")
-  //       pusherClient.unsubscribe(chatRoom)
-  //     }
-  //   }
-  // }, [chatRoom])
+      return () => {
+        pusherClient.unbind("realtime-mode");
+        pusherClient.unsubscribe(chatRoom);
+      };
+    }
+  }, [chatRoom]);
 
   const onHandleSentMessage = handleSubmit(async (values) => {
     try {
+      reset();
       const message = await onOwnerSendMessage(
         chatRoom!,
         values.content,
@@ -175,14 +174,12 @@ export const useChatWindow = () => {
       );
 
       if (message) {
-        dispatch(setChats([...chats, message.message[0]]));
-        // WIP: Uncomment this when pusher is set
-        // await onRealTimeChat(
-        //   chatRoom!,
-        //   message.message[0].message,
-        //   message.message[0].id,
-        //   "assistant"
-        // )
+        await onRealTimeChat(
+          chatRoom!,
+          message.message[0].message,
+          message.message[0].id,
+          "assistant"
+        );
       }
     } catch (error) {
       console.log(error);
