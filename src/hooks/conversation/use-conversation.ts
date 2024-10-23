@@ -2,7 +2,6 @@ import {
   onGetChatMessages,
   onGetDomainChatRooms,
   onOwnerSendMessage,
-  onRealTimeChat,
   onViewUnReadMessages,
 } from "@/actions/conversation";
 import { pusherClient } from "@/lib/utils";
@@ -149,19 +148,19 @@ export const useChatWindow = () => {
     onScrollToBottom();
   }, [chats, messageWindowRef]);
 
-  useEffect(() => {
-    if (chatRoom) {
-      pusherClient.subscribe(chatRoom);
-      pusherClient.bind("realtime-mode", (data: any) => {
-        dispatch(setChats([...chats, data.chat]));
-      });
+  // useEffect(() => {
+  //   if (chatRoom) {
+  //     pusherClient.subscribe(chatRoom);
+  //     pusherClient.bind("realtime-mode", (data: any) => {
+  //       dispatch(setChats([...chats, data.chat]));
+  //     });
 
-      return () => {
-        pusherClient.unbind("realtime-mode");
-        pusherClient.unsubscribe(chatRoom);
-      };
-    }
-  }, [chatRoom]);
+  //     return () => {
+  //       pusherClient.unbind("realtime-mode");
+  //       pusherClient.unsubscribe(chatRoom);
+  //     };
+  //   }
+  // }, [chatRoom]);
 
   const onHandleSentMessage = handleSubmit(async (values) => {
     try {
@@ -172,14 +171,14 @@ export const useChatWindow = () => {
         "assistant"
       );
 
-      if (message) {
-        await onRealTimeChat(
-          chatRoom!,
-          message.message[0].message,
-          message.message[0].id,
-          "assistant"
-        );
-      }
+      // if (message) {
+      //   await onRealTimeChat(
+      //     chatRoom!,
+      //     message.message[0].message,
+      //     message.message[0].id,
+      //     "assistant"
+      //   );
+      // }
     } catch (error) {
       console.log(error);
     }

@@ -196,30 +196,30 @@ export const useChatBot = () => {
   };
 };
 
-export const useRealTime = (
-  chatRoom: string,
-  setChats: React.Dispatch<
-    React.SetStateAction<
-      {
-        role: "user" | "assistant";
-        content: string;
-        link?: string | undefined;
-      }[]
-    >
-  >
-) => {
-  useEffect(() => {
-    pusherClient.subscribe(chatRoom);
-    pusherClient.bind("realtime-mode", (data: any) => {
-      setChats((prev: any) => [
-        ...prev,
-        {
-          role: data.chat.role,
-          content: data.chat.message,
-        },
-      ]);
-    });
+// export const useRealTime = (
+//   chatRoom: string,
+//   setChats: React.Dispatch<
+//     React.SetStateAction<
+//       {
+//         role: "user" | "assistant";
+//         content: string;
+//         link?: string | undefined;
+//       }[]
+//     >
+//   >
+// ) => {
+//   useEffect(() => {
+//     pusherClient.subscribe(chatRoom);
+//     pusherClient.bind("realtime-mode", (data: any) => {
+//       setChats((prev: any) => [
+//         ...prev,
+//         {
+//           role: data.chat.role,
+//           content: data.chat.message,
+//         },
+//       ]);
+//     });
 
-    return () => pusherClient.unsubscribe("realtime-mode");
-  }, []);
-};
+//     return () => pusherClient.unsubscribe("realtime-mode");
+//   }, []);
+// };

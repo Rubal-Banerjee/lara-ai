@@ -2,7 +2,6 @@
 
 import { client } from "@/lib/prisma";
 import { extractEmailsFromString, extractURLfromString } from "@/lib/utils";
-import { onRealTimeChat } from "../conversation";
 import { clerkClient } from "@clerk/nextjs";
 import { onMailer } from "../mailer";
 import OpenAi from "openai";
@@ -169,12 +168,14 @@ export const onAiChatBotAssistant = async (
             message,
             author
           );
-          onRealTimeChat(
-            checkCustomer.customer[0].chatRoom[0].id,
-            message,
-            "user",
-            author
-          );
+
+          // WIP: Setup Real Time Mode
+          // onRealTimeChat(
+          //   checkCustomer.customer[0].chatRoom[0].id,
+          //   message,
+          //   "user",
+          //   author
+          // );
 
           if (!checkCustomer.customer[0].chatRoom[0].mailed) {
             const user = await clerkClient.users.getUser(
@@ -235,13 +236,13 @@ export const onAiChatBotAssistant = async (
 
               if the customer says something out of context or inapporpriate. Simply say this is beyond you and you will get a real user to continue the conversation. And add a keyword (realtime) at the end.
 
-              if the customer agrees to book an appointment send them this link http://localhost:3000/portal/${id}/appointment/${
-                checkCustomer?.customer[0].id
-              }
+              if the customer agrees to book an appointment send them this link ${
+                process.env.NEXT_PUBLIC_URL
+              }portal/${id}/appointment/${checkCustomer?.customer[0].id}
 
-              if the customer wants to buy a product redirect them to the payment page http://localhost:3000/portal/${id}/payment/${
-                checkCustomer?.customer[0].id
-              }
+              if the customer wants to buy a product redirect them to the payment page ${
+                process.env.NEXT_PUBLIC_URL
+              }portal/${id}/payment/${checkCustomer?.customer[0].id}
           `,
             },
             ...chat,

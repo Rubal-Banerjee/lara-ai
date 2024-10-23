@@ -178,17 +178,17 @@ export const onOwnerSendMessage = async (
   }
 };
 
-export const onRealTimeChat = async (
-  chatRoomId: string,
-  message: string,
-  id: string,
-  role: "assistant" | "user"
-) => {
-  pusherServer.trigger(chatRoomId, "realtime-mode", {
-    chat: {
-      message,
-      id,
-      role,
-    },
-  });
-};
+// export const onRealTimeChat = async (
+//   chatRoomId: string,
+//   message: string,
+//   id: string,
+//   role: "assistant" | "user"
+// ) => {
+//   pusherServer.trigger(chatRoomId, "realtime-mode", {
+//     chat: {
+//       message,
+//       id,
+//       role,
+//     },
+//   });
+// };
